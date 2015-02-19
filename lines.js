@@ -1,4 +1,5 @@
 Lines = {
+    MAX_ROWS: 50,
     GRID_DISTANCE: 10,
     PLANE_DISTANCE: 500,
     OFFSET_X: -100,

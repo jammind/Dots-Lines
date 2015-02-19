@@ -1,0 +1,57 @@
+@charset "UTF-8";
+/* CSS Document */
+
+body {
+    background-color: #000000;
+    margin: 0px;
+    overflow: hidden;
+    font-family: Monospace;
+    font-size: 13px;
+    color: #ffffff;
+}
+
+a {
+    color:#0078ff;
+}
+
+#viewer {
+    background-color: #000033;
+    position: absolute;
+}
+
+#panels {
+    background-color: #333300;
+    float: right;
+}
+
+.panel {
+    background-color: #333333;
+    position: relative;
+    text-align: left;
+    z-index:100;
+}
+
+.grid {
+    background-color: #666666;
+    float: left;
+    margin-right: 1px;
+    margin-bottom: 1px;
+}
+
+#info {
+    position: absolute;
+    top: 10px;
+    width: 100%;
+    padding: 5px;
+    text-align: left;
+    z-index:100;
+}
+
+a {
+    color: orange;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #0080ff;
+}

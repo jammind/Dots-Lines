@@ -4,70 +4,24 @@
 		<title>three.js webgl - lines - cubes - colors</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		<style>
-            
-			body {
-				background-color: #000000;
-				margin: 0px;
-				overflow: hidden;
-				font-family: Monospace;
-				font-size: 13px;
-				color: #ffffff;
-			}
-
-			a {
-				color:#0078ff;
-			}
-
-			#viewer {
-				background-color: #000033;
-				position: absolute;
-                height: 100%;
-            }
-            
-			#panels {
-				background-color: #333300;
-                float: right;
-            }
-            
-			.panel {
-				background-color: #333333;
-				position: relative;
-				padding: 5px;
-				text-align: left;
-				z-index:100;
-			}
-
-			#info {
-				position: absolute;
-				top: 10px;
-                width: 100%;
-				padding: 5px;
-				text-align: left;
-				z-index:100;
-			}
-
-			a {
-				color: orange;
-				text-decoration: none;
-			}
-
-			a:hover {
-				color: #0080ff;
-			}
-
-		</style>
+        <link href="styles.css" rel="stylesheet" type="text/css" />
 	</head>
 	<body>
 
         <div id="panels">
-            <div id="panel_a" class="panel">Panel A</div>
-            <div id="panel_b" class="panel">Panel B</div>
+            <div id="panel_a" class="panel">
+                <div>Panel A</div>
+                <div class="gridContainer"></div>
+            </div>
+            <div id="panel_b" class="panel">
+                <div>Panel B</div>
+                <div class="gridContainer"></div>
+            </div>
         </div>
         <div id="viewer"></div>
 		<div id="info">
-			<a href="http://threejs.org" target="_blank">three.js</a> - color lines WebGL demo
-			[<a href="http://en.wikipedia.org/wiki/Hilbert_curve">Hilbert curve</a> thanks to <a href="http://www.openprocessing.org/visuals/?visualID=15599">Thomas Diewald</a>]
+            Project Lines by Jam Zhang<br>
+			Powered by <a href="http://threejs.org" target="_blank">three.js</a> 3D Library for WebGL
 		</div>
 
 		<script src="js/jquery.min.js"></script>
@@ -82,6 +36,7 @@
         
         <!-- Jam's code -->
 		<script src="lines.js"></script>
+		<script src="main.js"></script>
         <!-- End of Jam's code -->
 
 		<script>
@@ -100,135 +55,6 @@
 			init();
 			animate();
 
-			function init() {
-
-				var i, container;
-
-				container = document.getElementById('viewer');
-//				container = document.createElement( 'div' );
-//				document.body.appendChild( container );
-
-				camera = new THREE.PerspectiveCamera( 33, window.innerWidth / window.innerHeight, 1, 10000 );
-				camera.position.z = 700;
-
-				scene = new THREE.Scene();
-
-//				renderer = new THREE.CanvasRenderer();
-				renderer = new THREE.WebGLRenderer(); // WebGLRenderer for GPU acceleration but lower compatiability and visual quality
-                
-				renderer.setPixelRatio( window.devicePixelRatio );
-				renderer.setSize( window.innerWidth, window.innerHeight );
-				container.appendChild( renderer.domElement );
-
-				// lines
-                
-                Lines.drawLines(scene); // Jam's codes
-
-				//
-
-				stats = new Stats();
-				stats.domElement.style.position = 'absolute';
-				stats.domElement.style.top = '0px';
-				//container.appendChild( stats.domElement );
-
-				//
-
-				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
-				document.addEventListener( 'touchstart', onDocumentTouchStart, false );
-				document.addEventListener( 'touchmove', onDocumentTouchMove, false );
-
-				//
-
-				window.addEventListener( 'resize', onWindowResize, false );
-
-			}
-
-			function onWindowResize() {
-                
-                var panelSize = window.innerHeight * .5;
-                var viewerWidth = window.innerWidth - panelSize;
-
-				windowHalfX = window.innerWidth / 2;
-				windowHalfY = window.innerHeight / 2;
-                
-                $('#viewer').css("width", viewerWidth+"px");
-                $('#viewer').css("height", window.innerHeight+"px");
-                $('.panel').css("width", panelSize+"px");
-                $('.panel').css("height", panelSize+"px");
-
-//                console.log('panelSize='+panelSize, 'viewerWidth='+viewerWidth);
-                
-				camera.aspect = viewerWidth / window.innerHeight;
-				camera.updateProjectionMatrix();
-
-				renderer.setSize( viewerWidth, window.innerHeight);
-
-			}
-
-			function onDocumentMouseMove( event ) {
-
-				mouseX = event.clientX - windowHalfX;
-				mouseY = event.clientY - windowHalfY;
-
-			}
-
-			function onDocumentTouchStart( event ) {
-
-				if ( event.touches.length > 1 ) {
-
-					event.preventDefault();
-
-					mouseX = event.touches[ 0 ].pageX - windowHalfX;
-					mouseY = event.touches[ 0 ].pageY - windowHalfY;
-
-				}
-
-			}
-
-			function onDocumentTouchMove( event ) {
-
-				if ( event.touches.length == 1 ) {
-
-					event.preventDefault();
-
-					mouseX = event.touches[ 0 ].pageX - windowHalfX;
-					mouseY = event.touches[ 0 ].pageY - windowHalfY;
-				}
-
-			}
-
-			//
-
-			function animate() {
-
-				requestAnimationFrame( animate );
-				render();
-
-				stats.update();
-
-			}
-
-			function render() {
-
-//				camera.position.x += ( mouseX - camera.position.x ) * .5;
-//				camera.position.y += ( - mouseY + 200 - camera.position.y ) * .5;
-                Lines.parentTransform.rotation.y = mouseX * .01;
-                Lines.parentTransform.rotation.x = mouseY * .01;
-
-				camera.lookAt( scene.position );
-
-//				var time = Date.now() * 0.0005;
-//
-//				for ( var i = 0; i < scene.children.length; i ++ ) {
-//
-//					var object = scene.children[ i ];
-//					if ( object instanceof THREE.Line ) object.rotation.y = time * ( i % 2 ? 1 : -1 );
-//
-//				}
-
-				renderer.render(scene, camera );
-
-			}
 
 		</script>
 	</body>
