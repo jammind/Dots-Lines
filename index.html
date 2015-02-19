@@ -5,24 +5,45 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<style>
+            
 			body {
-				background-color: #ffffff;
+				background-color: #000000;
 				margin: 0px;
 				overflow: hidden;
+				font-family: Monospace;
+				font-size: 13px;
+				color: #ffffff;
 			}
 
 			a {
 				color:#0078ff;
 			}
 
+			#viewer {
+				background-color: #000033;
+				position: absolute;
+                height: 100%;
+            }
+            
+			#panels {
+				background-color: #333300;
+                float: right;
+            }
+            
+			.panel {
+				background-color: #333333;
+				position: relative;
+				padding: 5px;
+				text-align: left;
+				z-index:100;
+			}
+
 			#info {
 				position: absolute;
-				top: 10px; width: 100%;
-				color: #ffffff;
+				top: 10px;
+                width: 100%;
 				padding: 5px;
-				font-family: Monospace;
-				font-size: 13px;
-				text-align: center;
+				text-align: left;
 				z-index:100;
 			}
 
@@ -39,11 +60,17 @@
 	</head>
 	<body>
 
+        <div id="panels">
+            <div id="panel_a" class="panel">Panel A</div>
+            <div id="panel_b" class="panel">Panel B</div>
+        </div>
+        <div id="viewer"></div>
 		<div id="info">
 			<a href="http://threejs.org" target="_blank">three.js</a> - color lines WebGL demo
 			[<a href="http://en.wikipedia.org/wiki/Hilbert_curve">Hilbert curve</a> thanks to <a href="http://www.openprocessing.org/visuals/?visualID=15599">Thomas Diewald</a>]
 		</div>
 
+		<script src="js/jquery.min.js"></script>
 		<script src="js/three.min.js"></script>
 
 		<script src="js/renderers/Projector.js"></script>
@@ -77,8 +104,9 @@
 
 				var i, container;
 
-				container = document.createElement( 'div' );
-				document.body.appendChild( container );
+				container = document.getElementById('viewer');
+//				container = document.createElement( 'div' );
+//				document.body.appendChild( container );
 
 				camera = new THREE.PerspectiveCamera( 33, window.innerWidth / window.innerHeight, 1, 10000 );
 				camera.position.z = 700;
@@ -116,16 +144,24 @@
 			}
 
 			function onWindowResize() {
+                
+                var panelSize = window.innerHeight * .5;
+                var viewerWidth = window.innerWidth - panelSize;
 
 				windowHalfX = window.innerWidth / 2;
 				windowHalfY = window.innerHeight / 2;
+                
+                $('#viewer').css("width", viewerWidth+"px");
+                $('#viewer').css("height", window.innerHeight+"px");
+                $('.panel').css("width", panelSize+"px");
+                $('.panel').css("height", panelSize+"px");
 
-				camera.aspect = window.innerWidth / window.innerHeight;
+//                console.log('panelSize='+panelSize, 'viewerWidth='+viewerWidth);
+                
+				camera.aspect = viewerWidth / window.innerHeight;
 				camera.updateProjectionMatrix();
 
-				renderer.setSize( window.innerWidth, window.innerHeight );
-
-				composer.reset();
+				renderer.setSize( viewerWidth, window.innerHeight);
 
 			}
 

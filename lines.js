@@ -1,6 +1,6 @@
 Lines = {
-    GRID_DISTANCE: 5,
-    PLANE_DISTANCE: 400,
+    GRID_DISTANCE: 10,
+    PLANE_DISTANCE: 500,
     OFFSET_X: -100,
     OFFSET_Y: 100,
     OFFSET_Z: 0
