@@ -174,8 +174,9 @@
 
 			function render() {
 
-				camera.position.x += ( mouseX - camera.position.x ) * .5;
-				camera.position.y += ( - mouseY + 200 - camera.position.y ) * .5;
+//				camera.position.x += ( mouseX - camera.position.x ) * .5;
+//				camera.position.y += ( - mouseY + 200 - camera.position.y ) * .5;
+                Lines.parentTransform.rotation.y = mouseX * .01;
 
 				camera.lookAt( scene.position );
 

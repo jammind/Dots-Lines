@@ -1,9 +1,9 @@
 Lines = {
     GRID_DISTANCE: 15,
-    PLANE_DISTANCE: 2000,
+    PLANE_DISTANCE: 1000,
     OFFSET_X: -300,
     OFFSET_Y: 300,
-    OFFSET_Z: -250
+    OFFSET_Z: 500
 };
 
 Lines.MATERIAL = new THREE.LineBasicMaterial( {
@@ -173,7 +173,7 @@ Lines.parseBitmap = function(bitmaps) {
 Lines.drawLines = function (scene) {
     
     var arrays = Lines.parseBitmap(Lines.bitmaps);
-    var parentTransform = new THREE.Object3D();
+    Lines.parentTransform = new THREE.Object3D();
     
     var totalNodes = Math.max(arrays[0].length,arrays[1].length);
     for ( var n=0; n<totalNodes ; n++) {
@@ -211,9 +211,9 @@ Lines.drawLines = function (scene) {
         line.position.x = 0;
         line.position.y = 0;
         line.position.z = 0;
-        parentTransform.add( line );
+        Lines.parentTransform.add( line );
     }
 
-    scene.add( parentTransform );
+    scene.add( Lines.parentTransform );
 
 }
