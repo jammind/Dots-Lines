@@ -1,11 +1,20 @@
-Lines = {
-    MAX_ROWS: 50,
-    GRID_DISTANCE: 10,
-    PLANE_DISTANCE: 500,
-    OFFSET_X: -100,
-    OFFSET_Y: 100,
-    OFFSET_Z: 0
-};
+// lines.js
+// Dots & Lines main library
+// (C)2015 Jam Zhang
+
+
+// Constants
+
+function Lines() {
+}
+
+Lines.MAX_ROWS = 50,
+Lines.GRID_DISTANCE = 10,
+Lines.PLANE_DISTANCE = 500,
+Lines.OFFSET_X = -100,
+Lines.OFFSET_Y = 100,
+Lines.OFFSET_Z = 0
+
 
 Lines.MATERIAL = new THREE.LineBasicMaterial( {
     fog: true,
@@ -17,8 +26,7 @@ Lines.MATERIAL = new THREE.LineBasicMaterial( {
 } );
 
 
-
-Lines.plains = [
+Lines.patterns = [
 
     {
         color: 0xff00ff,
@@ -120,6 +128,84 @@ Lines.plains = [
 
 ];
 
+
+// Plain Class
+
+function Plain() {
+    this.array = [];
+}
+
+Plain.prototype.getGrid = function(plain, x, y) {
+    
+    if (!this.array[plain]) {
+        return false;
+    }
+    
+    if (!this.array[plain][x]) {
+        return false;
+    }
+    
+    return this.array[plain][x][y];
+}
+
+Plain.prototype.setGrid = function(plain, x, y, on) {
+    if (typeof(on)=='undefined') {
+        on = true;
+    }
+    if (!this.array[plain]) {
+        this.array[plain] = [];
+    }
+    if (!this.array[plain][x]) {
+        this.array[plain][x] = [];
+    }
+    this.array[plain][x][y] = on;
+}
+
+
+// Lines Methods
+
+Lines.prototype.parsePatterns = function (patterns) {
+
+    var arrays = [];
+
+    for (var i in patterns) {
+
+        var bitmap = patterns[i].bitmap;
+        var array = [];
+        var i = 0, a = 0, b = 0;
+
+        for (i = 0; i < bitmap.length; i++) {
+            switch (bitmap.charAt(i).toLowerCase()) {
+
+                case '/':
+                    a = 0;
+                    b ++;
+                    break;
+
+                case ' ':
+                    a ++;
+                    break;
+
+                default:
+//                    if (!array[a]) {
+//                        array[a] = [];
+//                    }
+//                    array[a][b] = 1;
+                    array.push({x:a, y:b});
+                    a ++;
+                    break;
+
+            }
+        }
+
+        arrays.push(array);
+    }
+
+    console.log(arrays);
+    return arrays;
+}
+
+
 Lines.parseBitmap = function(plains) {
 
     var arrays = [];
@@ -166,7 +252,8 @@ Lines.parseBitmap = function(plains) {
 // Draw lines
 Lines.drawLines = function (scene) {
     
-    var arrays = Lines.parseBitmap(Lines.plains);
+    var arrays = Lines.parseBitmap(Lines.patterns);
+//    Lines.parseBitmap(Lines.plains);
     Lines.parentTransform = new THREE.Object3D();
     
     var totalNodes = Math.max(arrays[0].length,arrays[1].length);
@@ -177,11 +264,11 @@ Lines.drawLines = function (scene) {
         var offsetX = 0, offsetY = 0;
         
         // Node A
-        if (Lines.plains[0].offsetX) {
-            offsetX = Lines.plains[0].offsetX;
+        if (Lines.patterns[0].offsetX) {
+            offsetX = Lines.patterns[0].offsetX;
         }
-        if (Lines.plains[0].offsetY) {
-            offsetY = Lines.plains[0].offsetY;
+        if (Lines.patterns[0].offsetY) {
+            offsetY = Lines.patterns[0].offsetY;
         }
 //        console.log('Offset A', offsetX, offsetY);
         var a = Math.floor(n / totalNodes * arrays[0].length);
@@ -190,7 +277,7 @@ Lines.drawLines = function (scene) {
         var y0 = - (p0.y + offsetY) * Lines.GRID_DISTANCE + Lines.OFFSET_Y;
         var z0 = Lines.PLANE_DISTANCE + Lines.OFFSET_Z;
         
-        colors3.push(new THREE.Color( Lines.plains[0].color ));
+        colors3.push(new THREE.Color( Lines.patterns[0].color ));
         geometry3.vertices.push( {x:x0, y:y0, z:z0} );
         
         // Node Black inthe Middle
@@ -200,11 +287,11 @@ Lines.drawLines = function (scene) {
         // Node B
         offsetX = 0;
         offsetY = 0;
-        if (Lines.plains[1].offsetX) {
-            offsetX = Lines.plains[1].offsetX;
+        if (Lines.patterns[1].offsetX) {
+            offsetX = Lines.patterns[1].offsetX;
         }
-        if (Lines.plains[1].offsetY) {
-            offsetY = Lines.plains[1].offsetY;
+        if (Lines.patterns[1].offsetY) {
+            offsetY = Lines.patterns[1].offsetY;
         }
 //        console.log('Offset B', offsetX, offsetY);
         var b = Math.floor(n / totalNodes * arrays[1].length);
@@ -214,7 +301,7 @@ Lines.drawLines = function (scene) {
         var z1 = - Lines.PLANE_DISTANCE + Lines.OFFSET_Z;
 
         geometry3.vertices.push( {x:x1, y:y1, z:z1} );
-        colors3.push(new THREE.Color( Lines.plains[1].color ));
+        colors3.push(new THREE.Color( Lines.patterns[1].color ));
 
 //        var color = new THREE.Color( 0xffffff );
 //        color.setHSL( a / points.length, 1.0, 0.5 );

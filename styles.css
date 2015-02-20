@@ -36,6 +36,11 @@ a {
     float: left;
     margin-right: 1px;
     margin-bottom: 1px;
+    cursor: pointer;
+}
+
+.grid:hover {
+    background-color: #999999;
 }
 
 #info {
