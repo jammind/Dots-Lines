@@ -38,6 +38,54 @@ Lines.MATERIAL = new THREE.LineBasicMaterial( {
 Lines.patterns = [
 
     {
+        color: 0xcc0000,
+        offsetX: -20,
+        offsetY: 20,
+        bitmap:
+        'x              x          x      xxxxxxxxxxxxxxx  xxxxxxxxxxxxxxxx/' +
+        'x              x         x x            x         x               /' +
+        'x              x         x x            x         x               /' +
+        'x              x        x   x           x         x               /' +
+        'x              x        x   x           x         x               /' +
+        'x              x       x     x          x         x               /' +
+        'x              x       x     x          x         x               /' +
+        'x              x      x       x         x         x               /' +
+        'xxxxxxxxxxxxxxxx      x       x         x         xxxxxxxxxxxxxx  /' +
+        'x              x     xxxxxxxxxxx        x         x               /' +
+        'x              x     x         x        x         x               /' +
+        'x              x    x           x       x         x               /' +
+        'x              x    x           x       x         x               /' +
+        'x              x   x             x      x         x               /' +
+        'x              x   x             x      x         x               /' +
+        'x              x  x               x     x         x               /' +
+        'x              x  x               x     x         xxxxxxxxxxxxxxxx/'
+    }
+    ,
+    {
+        color: 0xff66ff,
+        offsetX: -20,
+        offsetY: 20,
+        bitmap:
+        'x                   xxxxx      x               x  xxxxxxxxxxxxxxxx/' +
+        'x                 xx     xx    x               x  x               /' +
+        'x                x         x    x             x   x               /' +
+        'x               x           x   x             x   x               /' +
+        'x              x             x   x           x    x               /' +
+        'x              x             x   x           x    x               /' +
+        'x             x               x   x         x     x               /' +
+        'x             x               x   x         x     x               /' +
+        'x             x               x    x       x      xxxxxxxxxxxxxx  /' +
+        'x             x               x    x       x      x               /' +
+        'x             x               x     x     x       x               /' +
+        'x              x             x      x     x       x               /' +
+        'x              x             x       x   x        x               /' +
+        'x               x           x        x   x        x               /' +
+        'x                x         x          x x         x               /' +
+        'x                 xx     xx           x x         x               /' +
+        'xxxxxxxxxxxxxx      xxxxx              x          xxxxxxxxxxxxxxxx/'
+    }
+    ,
+    {
         color: 0x00ffff,
         offsetX: -20,
         offsetY: 20,
@@ -186,10 +234,9 @@ Lines.prototype.drawLines = function () {
     
     // Algorithm B - Connecting the nearest nodes
     
-    for (l = 0; l < 2; l++) {
+    for (l = 0; l < 2; l++) { // Enumerating 2 plains
         
-        for (n in this.plain.nodeBuffer[l]) {
-    //        console.log('Node ', n);
+        for (n in this.plain.nodeBuffer[l]) { // Enumerating nodes within the plain
 
             var geometry3 = new THREE.Geometry();
             var colors3 = [];
@@ -201,6 +248,7 @@ Lines.prototype.drawLines = function () {
             var minDistance = 0xffffff;
             var nearestNodes = [];
 
+            // Looking for nearest nodes
             for (m in this.plain.nodeBuffer[1-l]) {
 
                 var x1 = this.plain.nodeBuffer[1-l][m].x;
@@ -214,37 +262,44 @@ Lines.prototype.drawLines = function () {
                     nearestNodes = [{x: x1, y: y1}];
                 }
             }
-    //        console.log('End of searching');
-    //        console.log(nearestNodes);
 
             // Draw lines to the nearest nodes in Plain B
-
             for (m in nearestNodes) {
 
                 var x1 = nearestNodes[m].x;
                 var y1 = nearestNodes[m].y;
+                
+                if (l == 1 && this.plain.isConnected(x0, y0, x1, y1)) {
+//                    console.log('Duplicated nodes ignored');
+                } else {
+                    
+                    if (l == 0) {
+                        this.plain.setConnection(x0, y0, x1, y1);
+                    }
+                    
+                    // Adding Node A
+                    geometry3.vertices.push(Lines.toPosition(l, x0, y0));
+                    colors3.push(new THREE.Color( Lines.patterns[l].color ));
 
-                // Adding Node A
-                geometry3.vertices.push(Lines.toPosition(l, x0, y0));
-                colors3.push(new THREE.Color( Lines.patterns[l].color ));
+                    // Adding a black node in the Middle
+                    geometry3.vertices.push(Lines.toPosition(.5, (x0+x1)/2, (y0+y1)/2));
+                    colors3.push(new THREE.Color( 0x000000 ));
 
-                // Adding a black node in the Middle
-                geometry3.vertices.push(Lines.toPosition(.5, (x0+x1)/2, (y0+y1)/2));
-                colors3.push(new THREE.Color( 0x000000 ));
+                    // Adding Node B
+                    geometry3.vertices.push(Lines.toPosition(1-l, x1, y1));
+                    colors3.push(new THREE.Color( Lines.patterns[1-l].color ));
 
-                // Adding Node B
-                geometry3.vertices.push(Lines.toPosition(1-l, x1, y1));
-                colors3.push(new THREE.Color( Lines.patterns[1-l].color ));
+                    var line, p, scale = 0.3, d = 225;
 
-                var line, p, scale = 0.3, d = 225;
-
-                geometry3.colors = colors3;
-                line = new THREE.Line(geometry3, Lines.MATERIAL);
-                line.scale.x = line.scale.y = line.scale.z =  scale*1.5;
-                line.position.x = 0;
-                line.position.y = 0;
-                line.position.z = 0;
-                this.parentTransform.add( line );
+                    geometry3.colors = colors3;
+                    line = new THREE.Line(geometry3, Lines.MATERIAL);
+                    line.scale.x = line.scale.y = line.scale.z =  scale*1.5;
+                    line.position.x = 0;
+                    line.position.y = 0;
+                    line.position.z = 0;
+                    this.parentTransform.add( line );
+                    
+                }
 
             }
 
@@ -354,12 +409,12 @@ Plain.prototype.setNode = function(plain, x, y, on) {
 
 Plain.prototype.setConnection = function(x0, y0, x1, y1) {
     
-    if(!this.plainBuffer[0][x][y].connection) {
-        this.plainBuffer[0][x][y].connection = [];
+    if(!this.plainBuffer[0][x0][y0].connection) {
+        this.plainBuffer[0][x0][y0].connection = [];
     }
     
     if(!this.isConnected(x0, y0, x1, y1)) {
-        this.plainBuffer[0][x][y].connection.push({x:x1, y:y1});
+        this.plainBuffer[0][x0][y0].connection.push({x:x1, y:y1});
     }
     
 }
@@ -368,13 +423,19 @@ Plain.prototype.setConnection = function(x0, y0, x1, y1) {
 // Check if 2 nodes are connected
 
 Plain.prototype.isConnected = function(x0, y0, x1, y1) {
+        
+    Lines.plainBuffer = this.plainBuffer;
     
-    if(!this.plainBuffer[0][x][y].connection) {
+    try {
+        if(!this.plainBuffer[0][x0][y0].connection) {
+            return false;
+        }
+    } catch (err) {
         return false;
     }
     
-    for (var i in this.plainBuffer[0][x][y].connection) {
-        with (this.plainBuffer[0][x][y].connection[i]) {
+    for (var i in this.plainBuffer[0][x0][y0].connection) {
+        with (this.plainBuffer[0][x0][y0].connection[i]) {
             if (x==x1 && y==y1) {
                 return true;
             }
