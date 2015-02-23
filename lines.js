@@ -38,52 +38,6 @@ Lines.MATERIAL = new THREE.LineBasicMaterial( {
 Lines.patterns = [
 
     {
-        color: 0xff00ff,
-        offsetX: 20,
-        offsetY: -20,
-        bitmap:
-            '          x                     x          /' +
-            '          x                     x          /' +
-            '           x                   x           /' +
-            '           x                   x           /' +
-            '            x                 x            /' +
-            '            x                 x            /' +
-            '             x               x             /' +
-            '             x               x             /' +
-            ' xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx /' +
-            '                     x                     /' +
-            '                     x                     /' +
-            '                     x                     /' +
-            '                     x                     /' +
-            '                     x                     /' +
-            '                     x                     /' +
-            '                     x                     /' +
-            '                     x                     /' +
-            '  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  /' +
-            '                     x                     /' +
-            '                     x                     /' +
-            '                     x                     /' +
-            '                     x                     /' +
-            '                     x                     /' +
-            '                     x                     /' +
-            '                     x                     /' +
-            '                     x                     /' +
-            'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx/' +
-            '                     x                     /' +
-            '                     x                     /' +
-            '                     x                     /' +
-            '                     x                     /' +
-            '                     x                     /' +
-            '                     x                     /' +
-            '                     x                     /' +
-            '                     x                     /' +
-            '                     x                     /' +
-            '                     x                     /' +
-            '                     x                     /' +
-            '                     x                     /'
-    }
-    ,
-    {
         color: 0x00ffff,
         offsetX: -20,
         offsetY: 20,
@@ -134,6 +88,52 @@ Lines.patterns = [
         '                                          x/' +
         '                                     xxxxxx/'
     }
+    ,
+    {
+        color: 0xff00ff,
+        offsetX: 20,
+        offsetY: -20,
+        bitmap:
+            '          x                     x          /' +
+            '          x                     x          /' +
+            '           x                   x           /' +
+            '           x                   x           /' +
+            '            x                 x            /' +
+            '            x                 x            /' +
+            '             x               x             /' +
+            '             x               x             /' +
+            ' xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx /' +
+            '                     x                     /' +
+            '                     x                     /' +
+            '                     x                     /' +
+            '                     x                     /' +
+            '                     x                     /' +
+            '                     x                     /' +
+            '                     x                     /' +
+            '                     x                     /' +
+            '  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  /' +
+            '                     x                     /' +
+            '                     x                     /' +
+            '                     x                     /' +
+            '                     x                     /' +
+            '                     x                     /' +
+            '                     x                     /' +
+            '                     x                     /' +
+            '                     x                     /' +
+            'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx/' +
+            '                     x                     /' +
+            '                     x                     /' +
+            '                     x                     /' +
+            '                     x                     /' +
+            '                     x                     /' +
+            '                     x                     /' +
+            '                     x                     /' +
+            '                     x                     /' +
+            '                     x                     /' +
+            '                     x                     /' +
+            '                     x                     /' +
+            '                     x                     /'
+    }
 
 ];
 
@@ -162,7 +162,7 @@ Lines.prototype.parsePatterns = function (patterns) {
                     break;
 
                 default:
-                    this.plain.setGrid(p, a, b);
+                    this.plain.setNode(p, a, b);
                     a ++;
                     break;
 
@@ -180,77 +180,76 @@ Lines.prototype.parsePatterns = function (patterns) {
 
 Lines.prototype.drawLines = function () {
     
-    console.log('drawLines');
-    var n, m;
+    var l, n, m;
     
     this.parentTransform = new THREE.Object3D();
     
     // Algorithm B - Connecting the nearest nodes
     
-    for (n in this.plain.nodeBuffer[0]) {
-        console.log('Node ', n);
+    for (l = 0; l < 2; l++) {
+        
+        for (n in this.plain.nodeBuffer[l]) {
+    //        console.log('Node ', n);
 
-        var geometry3 = new THREE.Geometry();
-        var colors3 = [];
-        var offsetX = 0, offsetY = 0;
-        var x0 = this.plain.nodeBuffer[0][n].x;
-        var y0 = this.plain.nodeBuffer[0][n].y;
-        var z0 = -Lines.PLANE_DISTANCE;
-        
-        // Looking for the nearest nodes in Plain B
-        var minDistance = 0xffffff;
-        var nearestNodes = [];
-        
-        for (m in this.plain.nodeBuffer[1]) {
-            
-            var x1 = this.plain.nodeBuffer[1][m].x;
-            var y1 = this.plain.nodeBuffer[1][m].y;
-            
-            var d = Math.sqrt(Math.pow(x1-x0, 2) + Math.pow(y1-y0, 2));
-            if (d == minDistance) {
-                nearestNodes.push({x: x1, y: y1});
-//                console.log('One more node at the same distance (', x0, ',', y0, ')-(', x1, ',', y1, ')', d, minDistance);
-//                console.log(nearestNodes);
-            } else if (d < minDistance) {
-//                console.log('Nearest node updated (', x0, ',', y0, ')-(', x1, ',', y1, ')', d, minDistance);
-                minDistance = d;
-//                console.log(nearestNodes);
-                nearestNodes = [{x: x1, y: y1}];
-//                console.log(nearestNodes);
+            var geometry3 = new THREE.Geometry();
+            var colors3 = [];
+            var offsetX = 0, offsetY = 0;
+            var x0 = this.plain.nodeBuffer[l][n].x;
+            var y0 = this.plain.nodeBuffer[l][n].y;
+
+            // Looking for the nearest nodes in Plain B
+            var minDistance = 0xffffff;
+            var nearestNodes = [];
+
+            for (m in this.plain.nodeBuffer[1-l]) {
+
+                var x1 = this.plain.nodeBuffer[1-l][m].x;
+                var y1 = this.plain.nodeBuffer[1-l][m].y;
+
+                var d = Math.sqrt(Math.pow(x1-x0, 2) + Math.pow(y1-y0, 2));
+                if (d == minDistance) {
+                    nearestNodes.push({x: x1, y: y1});
+                } else if (d < minDistance) {
+                    minDistance = d;
+                    nearestNodes = [{x: x1, y: y1}];
+                }
             }
+    //        console.log('End of searching');
+    //        console.log(nearestNodes);
+
+            // Draw lines to the nearest nodes in Plain B
+
+            for (m in nearestNodes) {
+
+                var x1 = nearestNodes[m].x;
+                var y1 = nearestNodes[m].y;
+
+                // Adding Node A
+                geometry3.vertices.push(Lines.toPosition(l, x0, y0));
+                colors3.push(new THREE.Color( Lines.patterns[l].color ));
+
+                // Adding a black node in the Middle
+                geometry3.vertices.push(Lines.toPosition(.5, (x0+x1)/2, (y0+y1)/2));
+                colors3.push(new THREE.Color( 0x000000 ));
+
+                // Adding Node B
+                geometry3.vertices.push(Lines.toPosition(1-l, x1, y1));
+                colors3.push(new THREE.Color( Lines.patterns[1-l].color ));
+
+                var line, p, scale = 0.3, d = 225;
+
+                geometry3.colors = colors3;
+                line = new THREE.Line(geometry3, Lines.MATERIAL);
+                line.scale.x = line.scale.y = line.scale.z =  scale*1.5;
+                line.position.x = 0;
+                line.position.y = 0;
+                line.position.z = 0;
+                this.parentTransform.add( line );
+
+            }
+
         }
-        console.log('End of searching');
-        console.log(nearestNodes);
         
-        // Draw lines to the nearest nodes in Plain B
-        var z1 = Lines.PLANE_DISTANCE;
-        
-        for (m in nearestNodes) {
-            // Adding Node A
-            geometry3.vertices.push( {x:x0, y:y0, z:z0} );
-            colors3.push(new THREE.Color( Lines.patterns[0].color ));
-
-            // Adding a black node in the Middle
-            geometry3.vertices.push( {x:(x0+x1)*.5, y:(y0+y1)*.5, z:(z0+z1)*.5} );
-            colors3.push(new THREE.Color( 0x000000 ));
-
-            // Adding Node B
-            var x1 = nearestNodes[m].x;
-            var y1 = nearestNodes[m].y;
-            geometry3.vertices.push( {x:x1, y:y1, z:z1} );
-            colors3.push(new THREE.Color( Lines.patterns[1].color ));
-            
-            var line, p, scale = 0.3, d = 225;
-
-            geometry3.colors = colors3;
-            line = new THREE.Line(geometry3, Lines.MATERIAL);
-            line.scale.x = line.scale.y = line.scale.z =  scale*1.5;
-            line.position.x = 0;
-            line.position.y = 0;
-            line.position.z = 0;
-            this.parentTransform.add( line );
-        }
-
     }
 
     scene.add( this.parentTransform );
@@ -258,130 +257,19 @@ Lines.prototype.drawLines = function () {
 }
 
 
-
-
-// Pre-process patterns
-
-Lines.parseBitmap = function(plains) {
-
-    var arrays = [];
-
-    for (var i in plains) {
-
-        var bitmap = plains[i].bitmap;
-        var array = [];
-        var i = 0, a = 0, b = 0;
-
-        for (i = 0; i < bitmap.length; i++) {
-            switch (bitmap.charAt(i).toLowerCase()) {
-
-                case '/':
-                    a = 0;
-                    b ++;
-                    break;
-
-                case ' ':
-                    a ++;
-                    break;
-
-                default:
-//                    if (!array[a]) {
-//                        array[a] = [];
-//                    }
-//                    array[a][b] = 1;
-                    array.push({x:a, y:b});
-                    a ++;
-                    break;
-
-            }
-        }
-
-        arrays.push(array);
+// Converting grid coodinate to 3D position
+Lines.toPosition = function(plain, x, y) {
+    return {
+        x: x * Lines.GRID_DISTANCE + Lines.OFFSET_X,
+        y: - y * Lines.GRID_DISTANCE + Lines.OFFSET_Y,
+        z: (plain - .5) * 2 * Lines.PLANE_DISTANCE
     }
-
-    console.log(arrays);
-    return arrays;
-}
-
-
-
-// Draw lines
-Lines.drawLines = function (scene) {
-    
-    var arrays = Lines.parseBitmap(Lines.patterns);
-//    Lines.parseBitmap(Lines.plains);
-    Lines.parentTransform = new THREE.Object3D();
-    
-    var totalNodes = Math.max(arrays[0].length,arrays[1].length);
-    for ( var n=0; n<totalNodes ; n++) {
-
-        var geometry3 = new THREE.Geometry();
-        var colors3 = [];
-        var offsetX = 0, offsetY = 0;
-        
-        // Node A
-        if (Lines.patterns[0].offsetX) {
-            offsetX = Lines.patterns[0].offsetX;
-        }
-        if (Lines.patterns[0].offsetY) {
-            offsetY = Lines.patterns[0].offsetY;
-        }
-//        console.log('Offset A', offsetX, offsetY);
-        var a = Math.floor(n / totalNodes * arrays[0].length);
-        var p0 = arrays[0][a];
-        var x0 = (p0.x + offsetX) * Lines.GRID_DISTANCE + Lines.OFFSET_X;
-        var y0 = - (p0.y + offsetY) * Lines.GRID_DISTANCE + Lines.OFFSET_Y;
-        var z0 = Lines.PLANE_DISTANCE + Lines.OFFSET_Z;
-        
-        colors3.push(new THREE.Color( Lines.patterns[0].color ));
-        geometry3.vertices.push( {x:x0, y:y0, z:z0} );
-        
-        // Node Black inthe Middle
-        geometry3.vertices.push( {x:(x0+x1)*.5, y:(y0+y1)*.5, z:(z0+z1)*.5} );
-        colors3.push(new THREE.Color( 0x000000 ));
-
-        // Node B
-        offsetX = 0;
-        offsetY = 0;
-        if (Lines.patterns[1].offsetX) {
-            offsetX = Lines.patterns[1].offsetX;
-        }
-        if (Lines.patterns[1].offsetY) {
-            offsetY = Lines.patterns[1].offsetY;
-        }
-//        console.log('Offset B', offsetX, offsetY);
-        var b = Math.floor(n / totalNodes * arrays[1].length);
-        var p1 = arrays[1][b];
-        var x1 = (p1.x + offsetX) * Lines.GRID_DISTANCE + Lines.OFFSET_X;
-        var y1 = - (p1.y + offsetY) * Lines.GRID_DISTANCE + Lines.OFFSET_Y;
-        var z1 = - Lines.PLANE_DISTANCE + Lines.OFFSET_Z;
-
-        geometry3.vertices.push( {x:x1, y:y1, z:z1} );
-        colors3.push(new THREE.Color( Lines.patterns[1].color ));
-
-//        var color = new THREE.Color( 0xffffff );
-//        color.setHSL( a / points.length, 1.0, 0.5 );
-        
-
-        var line, p, scale = 0.3, d = 225;
-
-        geometry3.colors = colors3;
-        line = new THREE.Line(geometry3, Lines.MATERIAL);
-        line.scale.x = line.scale.y = line.scale.z =  scale*1.5;
-        line.position.x = 0;
-        line.position.y = 0;
-        line.position.z = 0;
-        Lines.parentTransform.add( line );
-    }
-
-    scene.add( Lines.parentTransform );
-
 }
 
 
 
 // Plain Class
-// Abstract class for plains and nodes
+// Abstract class for plains and nodes with all the connection data
 
 function Plain() {
     
@@ -394,7 +282,10 @@ function Plain() {
     
 }
 
-Plain.prototype.getGrid = function(plain, x, y) {
+
+// Get the a certain node value (true / false)
+
+Plain.prototype.getNode = function(plain, x, y) {
     
     if (!this.plainBuffer[plain]) {
         return false;
@@ -407,7 +298,10 @@ Plain.prototype.getGrid = function(plain, x, y) {
     return this.plainBuffer[plain][x][y];
 }
 
-Plain.prototype.setGrid = function(plain, x, y, on) {
+
+// Set the a certain node value (true / false)
+
+Plain.prototype.setNode = function(plain, x, y, on) {
     
     if (typeof(on)=='undefined') {
         on = true;
@@ -421,6 +315,10 @@ Plain.prototype.setGrid = function(plain, x, y, on) {
         this.plainBuffer[plain][x] = [];
     }
     
+    if (!this.plainBuffer[plain][x][y]) {
+        this.plainBuffer[plain][x][y] = {};
+    }
+    
     if (!this.nodeBuffer[plain]) {
         this.nodeBuffer[plain] = [];
     }
@@ -429,18 +327,18 @@ Plain.prototype.setGrid = function(plain, x, y, on) {
         this.nodes[plain] = 0;
     }
     
-    if (on && !this.plainBuffer[plain][x][y]) { // Add a node to the plain
+    if (on && !this.plainBuffer[plain][x][y].node) { // Add a node to the plain
         
         this.nodeBuffer[plain].push({x:x, y:y});
-        this.plainBuffer[plain][x][y] = true;
+        this.plainBuffer[plain][x][y].node = true;
         this.nodes[plain] ++;
         this.totalNodes ++;
         this.maxWidth = Math.max(this.maxWidth, x);
         this.maxHeight = Math.max(this.maxHeight, y);
         
-    } else if (!on && this.plainBuffer[plain][x][y]) { // Remove a node from the plain
+    } else if (!on && this.plainBuffer[plain][x][y].node) { // Remove a node from the plain
         
-        this.plainBuffer[plain][x][y] = false;
+        this.plainBuffer[plain][x][y].node = false;
         this.nodes[plain] --;
         this.totalNodes --;
 //        this.maxWidth = Math.max(this.maxWidth, x);
@@ -449,6 +347,46 @@ Plain.prototype.setGrid = function(plain, x, y, on) {
     }
     
 }
+
+
+// Set a connection between 2 nodes
+// Connection is only stored one-way in plain0
+
+Plain.prototype.setConnection = function(x0, y0, x1, y1) {
+    
+    if(!this.plainBuffer[0][x][y].connection) {
+        this.plainBuffer[0][x][y].connection = [];
+    }
+    
+    if(!this.isConnected(x0, y0, x1, y1)) {
+        this.plainBuffer[0][x][y].connection.push({x:x1, y:y1});
+    }
+    
+}
+
+
+// Check if 2 nodes are connected
+
+Plain.prototype.isConnected = function(x0, y0, x1, y1) {
+    
+    if(!this.plainBuffer[0][x][y].connection) {
+        return false;
+    }
+    
+    for (var i in this.plainBuffer[0][x][y].connection) {
+        with (this.plainBuffer[0][x][y].connection[i]) {
+            if (x==x1 && y==y1) {
+                return true;
+            }
+        }
+    }
+    
+    return false;
+    
+}
+
+
+// Get all nodes in a plain as an Array
 
 Plain.prototype.getPlainNodes = function(plain) {
     return this.nodes[plain];
