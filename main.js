@@ -29,7 +29,7 @@ function initViewer() {
 
     // lines
 
-    Lines.drawLines(scene); // Jam's codes
+    lines = new Lines(scene); // Jam's codes
 
     //
 
@@ -66,8 +66,8 @@ function render() {
 
 //				camera.position.x += ( mouseX - camera.position.x ) * .5;
 //				camera.position.y += ( - mouseY + 200 - camera.position.y ) * .5;
-    Lines.parentTransform.rotation.y = mouseX * .01;
-    Lines.parentTransform.rotation.x = mouseY * .01;
+    lines.parentTransform.rotation.y = mouseX * .01;
+    lines.parentTransform.rotation.x = mouseY * .01;
 
     camera.lookAt( scene.position );
 
