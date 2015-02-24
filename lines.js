@@ -39,7 +39,7 @@ Lines.MATERIAL = new THREE.LineBasicMaterial( {
 Lines.patterns = [
     // 宇宙
     {
-        color: 0xff66ff,
+        color: 0xffff00,
         offsetX: -20,
         offsetY: 20,
         bitmap:
@@ -47,7 +47,7 @@ Lines.patterns = [
     }
     ,
     {
-        color: 0x00ffff,
+        color: 0x666699,
         offsetX: -20,
         offsetY: 20,
         bitmap:
