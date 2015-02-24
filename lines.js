@@ -17,12 +17,13 @@ function Lines(scene) {
 
 // Constants
 
-Lines.MAX_ROWS = 50,
-Lines.GRID_DISTANCE = 10,
-Lines.PLANE_DISTANCE = 500,
-Lines.OFFSET_X = -100,
-Lines.OFFSET_Y = 100,
-Lines.OFFSET_Z = 0
+Lines.MAX_ROWS = 50;
+Lines.GRID_DISTANCE = 10;
+Lines.PLANE_DISTANCE = 500;
+Lines.OFFSET_X = -100;
+Lines.OFFSET_Y = 100;
+Lines.OFFSET_Z = 0;
+Lines.SCALE = .5;
 
 
 Lines.MATERIAL = new THREE.LineBasicMaterial( {
@@ -36,7 +37,67 @@ Lines.MATERIAL = new THREE.LineBasicMaterial( {
 
 
 Lines.patterns = [
-
+    // 宇宙
+    {
+        color: 0xff66ff,
+        offsetX: -20,
+        offsetY: 20,
+        bitmap:
+        'x'
+    }
+    ,
+    {
+        color: 0x00ffff,
+        offsetX: -20,
+        offsetY: 20,
+        bitmap:
+        '                      x                                               x                     /' +
+        '                      x                                               x                     /' +
+        '                      x                                               x                     /' +
+        '                      x                                               x                     /' +
+        '                      x                                               x                     /' +
+        '                      x                                               x                     /' +
+        '                      x                                               x                     /' +
+        'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx    xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx/' +
+        'x                                          x    x                                          x/' +
+        'x                                          x    x                                          x/' +
+        'x                                          x    x                     x                    x/' +
+        'x                                          x    x                     x                    x/' +
+        'x                                          x    x                     x                    x/' +
+        'x      xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx      x    x                     x                    x/' +
+        'x                     x                    x    x                     x                    x/' +
+        '                      x                                               x                     /' +
+        '                      x                            xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx   /' +
+        '                      x                            x                  x                 x   /' +
+        '                      x                            x                  x                 x   /' +
+        '                      x                            x                  x                 x   /' +
+        '                      x                            x                  x                 x   /' +
+        '                      x                            x                  x                 x   /' +
+        '                      x                            x                  x                 x   /' +
+        '                      x                            x                  x                 x   /' +
+        '                      x                            x                  x                 x   /' +
+        '    xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx          x                  x                 x   /' +
+        '                      x                            x                  x                 x   /' +
+        '                      x                            x                  x                 x   /' +
+        '                      x                            x                  x                 x   /' +
+        '                      x                            x                  x                 x   /' +
+        '                      x                            xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx   /' +
+        '                      x                            x                  x                 x   /' +
+        '                      x                            x                  x                 x   /' +
+        '                      x                            x                  x                 x   /' +
+        '                      x                            x                  x                 x   /' +
+        '                      x                            x                  x                 x   /' +
+        '                      x                            x                  x                 x   /' +
+        '                      x                            x                  x                 x   /' +
+        '                      x                            x                  x                 x   /' +
+        '                      x                            x                  x                 x   /' +
+        '                      x                            x                  x                 x   /' +
+        '                      x                            x                  x                 x   /' +
+        '                      x                            x                  x                 x   /' +
+        '                      x                            x                  x                 x   /' +
+        '              xxxxxxxxx                            xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx   /'
+    }
+    ,
     {
         color: 0xcc0000,
         offsetX: -20,
@@ -238,8 +299,6 @@ Lines.prototype.drawLines = function () {
         
         for (n in this.plain.nodeBuffer[l]) { // Enumerating nodes within the plain
 
-            var geometry3 = new THREE.Geometry();
-            var colors3 = [];
             var offsetX = 0, offsetY = 0;
             var x0 = this.plain.nodeBuffer[l][n].x;
             var y0 = this.plain.nodeBuffer[l][n].y;
@@ -273,6 +332,9 @@ Lines.prototype.drawLines = function () {
 //                    console.log('Duplicated nodes ignored');
                 } else {
                     
+                    var geometry3 = new THREE.Geometry();
+                    var colors3 = [];
+                    
                     if (l == 0) {
                         this.plain.setConnection(x0, y0, x1, y1);
                     }
@@ -282,6 +344,7 @@ Lines.prototype.drawLines = function () {
                     colors3.push(new THREE.Color( Lines.patterns[l].color ));
 
                     // Adding a black node in the Middle
+//                    geometry3.vertices.push({x:0, y:0, z:0});
                     geometry3.vertices.push(Lines.toPosition(.5, (x0+x1)/2, (y0+y1)/2));
                     colors3.push(new THREE.Color( 0x000000 ));
 
@@ -289,11 +352,11 @@ Lines.prototype.drawLines = function () {
                     geometry3.vertices.push(Lines.toPosition(1-l, x1, y1));
                     colors3.push(new THREE.Color( Lines.patterns[1-l].color ));
 
-                    var line, p, scale = 0.3, d = 225;
+                    var line, p, d = 225;
 
                     geometry3.colors = colors3;
                     line = new THREE.Line(geometry3, Lines.MATERIAL);
-                    line.scale.x = line.scale.y = line.scale.z =  scale*1.5;
+                    line.scale.x = line.scale.y = line.scale.z =  Lines.SCALE;
                     line.position.x = 0;
                     line.position.y = 0;
                     line.position.z = 0;

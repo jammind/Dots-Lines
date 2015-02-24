@@ -1,5 +1,5 @@
 function init() {
-    initEditor();
+//    initEditor();
     initViewer();
 }
 
@@ -20,9 +20,10 @@ function initViewer() {
     camera.position.z = 700;
 
     scene = new THREE.Scene();
+    scene.fog = new THREE.Fog (0x000000, 500, 2000);
 
 //	renderer = new THREE.CanvasRenderer();
-    renderer = new THREE.WebGLRenderer();
+    renderer = new THREE.WebGLRenderer({antialias: true});
     renderer.setPixelRatio( window.devicePixelRatio );
     renderer.setSize( window.innerWidth, window.innerHeight );
     container.appendChild( renderer.domElement );
@@ -88,7 +89,7 @@ function onWindowResize() {
 
     var panelWidth = (window.innerHeight - 100) * .5;
     var gridSize = Math.floor(panelWidth / Lines.MAX_ROWS) - 1;
-    var viewerWidth = window.innerWidth - panelWidth;
+    var viewerWidth = window.innerWidth; // - panelWidth;
     var containerSize = (gridSize + 1) * Lines.MAX_ROWS;
     panelWidth = containerSize + 2;
 

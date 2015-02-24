@@ -20,6 +20,7 @@ a {
 }
 
 #panels {
+    visibility: hidden;
     background-color: #333300;
     float: right;
 }
