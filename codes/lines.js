@@ -47,7 +47,7 @@ Lines.patterns = [
     }
     ,
     {
-        color: 0x666699,
+        color: 0x0066ff,
         offsetX: -20,
         offsetY: 20,
         bitmap:
